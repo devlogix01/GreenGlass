@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity Details - Club Reservation System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabaseClient.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'fadeIn': 'fadeIn 0.3s ease-in-out',
+                        'slideUp': 'slideUp 0.4s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gradient-to-br from-slate-50 via-white to-violet-50 min-h-screen font-sans">
+    <!-- Navigation -->
+    <nav class="bg-white/80 backdrop-blur-sm border-b border-slate-200 sticky top-0 z-40">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-10 h-10 bg-gradient-to-br from-violet-600 to-violet-700 rounded-xl shadow-lg shadow-violet-500/20 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h1 class="text-xl font-bold text-slate-900">Activity Details</h1>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span id="userEmail" class="text-sm font-medium text-slate-600 hidden sm:block"></span>
+                    <button id="logoutBtn"
+                        class="px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 font-semibold border border-slate-300 rounded-xl shadow-sm transition-all duration-200 active:scale-95 text-sm">
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn">
+        <!-- Back Link -->
+        <div class="mb-8">
+            <a id="backLink" href="#"
+                class="inline-flex items-center gap-2 text-violet-600 hover:text-violet-700 font-semibold text-sm transition-colors duration-200 group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:-translate-x-1 transition-transform"
+                    viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+                        clip-rule="evenodd" />
+                </svg>
+                Back to Club
+            </a>
+        </div>
+
+        <!-- Activity Details Card -->
+        <div id="activityDetails"
+            class="bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-2xl shadow-xl shadow-slate-200/50 overflow-hidden animate-slideUp">
+            <!-- Activity details will be loaded here dynamically -->
+            <div class="flex flex-col items-center justify-center py-20">
+                <div class="w-12 h-12 border-4 border-slate-200 border-t-violet-600 rounded-full animate-spin mb-4">
+                </div>
+                <p class="text-slate-600 font-medium">Loading activity details...</p>
+            </div>
+        </div>
+
+        <!-- Reservation Section -->
+        <div id="reservationSection" class="mt-8 animate-slideUp" style="animation-delay: 0.1s;">
+            <!-- Reservation form/button will be loaded here -->
+        </div>
+
+        <!-- User Reservations -->
+        <div id="userReservations" class="mt-12 animate-slideUp" style="animation-delay: 0.2s;">
+            <h3 class="text-2xl font-bold tracking-tight text-slate-900 mb-6">Your Reservations</h3>
+            <div id="reservationsContainer" class="space-y-4">
+                <!-- User's reservations will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="activity.js"></script>
+</body>
+
+</html>

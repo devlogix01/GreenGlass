@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Club Details - Club Reservation System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabaseClient.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <h1 class="text-xl font-bold text-gray-800">Club Reservation System</h1>
+                <div class="flex items-center space-x-4">
+                    <span id="userEmail" class="text-sm font-medium text-gray-600"></span>
+                    <button id="logoutBtn" class="bg-white text-gray-700 font-semibold border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 py-2 px-4 text-sm">
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="mb-8">
+            <a href="index.html" class="text-indigo-600 hover:text-indigo-700 flex items-center font-semibold text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                </svg>
+                Back to Clubs
+            </a>
+        </div>
+
+        <div id="clubDetails" class="bg-white rounded-xl shadow-md overflow-hidden">
+            <!-- Club details will be loaded here dynamically -->
+            <div class="text-center py-12 text-gray-500">Loading club details...</div>
+        </div>
+
+        <div class="mt-12">
+            <h3 class="text-2xl font-bold tracking-tight text-gray-800 mb-8">Activities</h3>
+            <div id="activitiesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Activities will be loaded here dynamically -->
+                <div class="text-center py-12 text-gray-500">Loading activities...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="club.js"></script>
+</body>
+</html>

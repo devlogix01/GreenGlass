@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Club Reservation System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabaseClient.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <h1 class="text-xl font-bold text-gray-800">Club Reservation System - Admin</h1>
+                <div class="flex items-center space-x-4">
+                    <span id="userEmail" class="text-sm font-medium text-gray-600"></span>
+                    <button id="logoutBtn" class="bg-white text-gray-700 font-semibold border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 py-2 px-4 text-sm">
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-3xl font-bold tracking-tight text-gray-800">Admin Dashboard</h2>
+            <a href="index.html" class="text-indigo-600 hover:text-indigo-700 font-semibold text-sm flex items-center">
+                User View
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+            </a>
+        </div>
+
+        <!-- Tabs -->
+        <div class="mb-8 border-b border-gray-200">
+            <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                <button id="clubsTab" class="whitespace-nowrap py-4 px-1 border-b-2 border-indigo-500 font-semibold text-sm text-indigo-600">
+                    Clubs
+                </button>
+                <button id="activitiesTab" class="whitespace-nowrap py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                    Activities
+                </button>
+            </nav>
+        </div>
+
+        <!-- Clubs Tab Content -->
+        <div id="clubsContent">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold tracking-tight text-gray-800">Manage Clubs</h3>
+                <button id="addClubBtn" class="bg-indigo-600 text-white font-semibold rounded-lg shadow-sm hover:bg-indigo-700 py-2 px-4 text-sm">
+                    Add New Club
+                </button>
+            </div>
+
+            <div id="clubsList" class="bg-white rounded-xl shadow-md overflow-hidden">
+                <!-- Clubs will be loaded here dynamically -->
+                <div class="text-center py-12 text-gray-500">Loading clubs...</div>
+            </div>
+        </div>
+
+        <!-- Activities Tab Content -->
+        <div id="activitiesContent" class="hidden">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold tracking-tight text-gray-800">Manage Activities</h3>
+                <button id="addActivityBtn" class="bg-indigo-600 text-white font-semibold rounded-lg shadow-sm hover:bg-indigo-700 py-2 px-4 text-sm">
+                    Add New Activity
+                </button>
+            </div>
+
+            <div id="activitiesList" class="bg-white rounded-xl shadow-md overflow-hidden">
+                <!-- Activities will be loaded here dynamically -->
+                <div class="text-center py-12 text-gray-500">Loading activities...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Club Modal -->
+    <div id="clubModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-lg mx-auto">
+            <div class="px-6 py-5 border-b border-gray-200">
+                <h3 id="clubModalTitle" class="text-lg font-semibold text-gray-900">Add Club</h3>
+            </div>
+            <form id="clubForm" class="px-6 py-6 space-y-6">
+                <input type="hidden" id="clubId">
+                <div>
+                    <label for="clubName" class="block text-sm font-medium text-gray-700">Club Name</label>
+                    <input type="text" id="clubName" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <label for="clubDescription" class="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea id="clubDescription" rows="4" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                </div>
+                <div>
+                    <label for="clubImage" class="block text-sm font-medium text-gray-700">Club Image</label>
+                    <input type="file" id="clubImage" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                    <img id="clubImagePreview" src="" alt="Preview" class="mt-4 rounded-lg max-h-40 hidden">
+                </div>
+                <div>
+                    <label for="leaderName" class="block text-sm font-medium text-gray-700">Leader Name</label>
+                    <input type="text" id="leaderName" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <label for="leaderContact" class="block text-sm font-medium text-gray-700">Leader Contact</label>
+                    <input type="text" id="leaderContact" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div class="flex justify-end space-x-4 pt-4">
+                    <button type="button" id="cancelClubBtn" class="bg-white text-gray-700 font-semibold border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 py-2 px-4 text-sm">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-indigo-600 text-white font-semibold rounded-lg shadow-sm hover:bg-indigo-700 py-2 px-4 text-sm">
+                        Save Club
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add/Edit Activity Modal -->
+    <div id="activityModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-lg mx-auto">
+            <div class="px-6 py-5 border-b border-gray-200">
+                <h3 id="activityModalTitle" class="text-lg font-semibold text-gray-900">Add Activity</h3>
+            </div>
+            <form id="activityForm" class="px-6 py-6 space-y-6">
+                <input type="hidden" id="activityId">
+                <div>
+                    <label for="activityClub" class="block text-sm font-medium text-gray-700">Club</label>
+                    <select id="activityClub" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="">Select a club</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="activityTitle" class="block text-sm font-medium text-gray-700">Title</label>
+                    <input type="text" id="activityTitle" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <label for="activityDescription" class="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea id="activityDescription" rows="4" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                </div>
+                <div>
+                    <label for="activityImage" class="block text-sm font-medium text-gray-700">Activity Image</label>
+                    <input type="file" id="activityImage" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                    <img id="activityImagePreview" src="" alt="Preview" class="mt-4 rounded-lg max-h-40 hidden">
+                </div>
+                <div>
+                    <label for="eventTime" class="block text-sm font-medium text-gray-700">Event Time</label>
+                    <input type="datetime-local" id="eventTime" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
+                    <input type="text" id="location" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div class="flex justify-end space-x-4 pt-4">
+                    <button type="button" id="cancelActivityBtn" class="bg-white text-gray-700 font-semibold border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 py-2 px-4 text-sm">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-indigo-600 text-white font-semibold rounded-lg shadow-sm hover:bg-indigo-700 py-2 px-4 text-sm">
+                        Save Activity
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

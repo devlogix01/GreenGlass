@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase 配置向导</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gradient-to-br from-indigo-50 to-purple-50 min-h-screen p-8">
+    <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">🚀 Supabase 配置向导</h1>
+            <p class="text-gray-600">按照步骤完成配置，让你的项目运行起来！</p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="mb-8">
+            <div class="flex justify-between mb-2">
+                <span class="text-sm font-medium text-gray-700">配置进度</span>
+                <span class="text-sm font-medium text-gray-700" id="progressText">0/6 完成</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-3">
+                <div id="progressBar" class="bg-indigo-600 h-3 rounded-full transition-all duration-500"
+                    style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Steps -->
+        <div class="space-y-4">
+            <!-- Step 1 -->
+            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-indigo-500">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
+                            <span class="text-indigo-600 font-bold">1</span>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">创建 Supabase 项目</h3>
+                        <p class="text-gray-600 mb-3">访问 Supabase 官网并创建一个新项目</p>
+                        <div class="bg-gray-50 p-4 rounded-lg mb-3">
+                            <ol class="list-decimal list-inside space-y-2 text-sm text-gray-700">
+                                <li>访问 <a href="https://supabase.com" target="_blank"
+                                        class="text-indigo-600 hover:underline font-semibold">https://supabase.com</a>
+                                </li>
+                                <li>使用 GitHub 账号登录</li>
+                                <li>点击 "New Project"</li>
+                                <li>填写项目名称和密码（请保存密码！）</li>
+                                <li>选择离你最近的区域（Singapore 或 Tokyo）</li>
+                                <li>选择 Free 计划</li>
+                                <li>等待 1-2 分钟完成初始化</li>
+                            </ol>
+                        </div>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="step-checkbox w-5 h-5 text-indigo-600 rounded" data-step="1">
+                            <span class="ml-2 text-gray-700">我已完成此步骤</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-purple-500">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                            <span class="text-purple-600 font-bold">2</span>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">获取 API 凭证</h3>
+                        <p class="text-gray-600 mb-3">从 Supabase 仪表板获取项目凭证</p>
+                        <div class="bg-gray-50 p-4 rounded-lg mb-3">
+                            <ol class="list-decimal list-inside space-y-2 text-sm text-gray-700">
+                                <li>在项目仪表板，点击左侧 "Settings" (齿轮图标)</li>
+                                <li>选择 "API" 选项卡</li>
+                                <li>复制 "Project URL"</li>
+                                <li>复制 "anon public" key</li>
+                                <li>打开项目中的 <code class="bg-gray-200 px-2 py-1 rounded">supabaseClient.js</code> 文件</li>
+                                <li>替换第 3 行的 <code class="bg-gray-200 px-2 py-1 rounded">YOUR_SUPABASE_URL</code></li>
+                                <li>替换第 4 行的 <code class="bg-gray-200 px-2 py-1 rounded">YOUR_SUPABASE_ANON_KEY</code>
+                                </li>
+                                <li>保存文件</li>
+                            </ol>
+                        </div>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="step-checkbox w-5 h-5 text-purple-600 rounded" data-step="2">
+                            <span class="ml-2 text-gray-700">我已完成此步骤</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-pink-500">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
+                            <span class="text-pink-600 font-bold">3</span>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">创建数据库表</h3>
+                        <p class="text-gray-600 mb-3">在 Supabase SQL 编辑器中创建所需的表</p>
+                        <div class="bg-gray-50 p-4 rounded-lg mb-3">
+                            <ol class="list-decimal list-inside space-y-2 text-sm text-gray-700">
+                                <li>在 Supabase 仪表板，点击左侧 "SQL Editor"</li>
+                                <li>点击 "New query"</li>
+                                <li>打开项目中的 <code class="bg-gray-200 px-2 py-1 rounded">SUPABASE_SETUP_GUIDE.md</code>
+                                </li>
+                                <li>复制 "Clubs Table" 和 "Activities Table" 的 SQL</li>
+                                <li>粘贴到 SQL 编辑器</li>
+                                <li>点击 "Run" 执行</li>
+                                <li>在 "Table Editor" 中验证表已创建</li>
+                            </ol>
+                        </div>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="step-checkbox w-5 h-5 text-pink-600 rounded" data-step="3">
+                            <span class="ml-2 text-gray-700">我已完成此步骤</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-red-500">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                            <span class="text-red-600 font-bold">4</span>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">配置安全策略</h3>
+                        <p class="text-gray-600 mb-3">设置数据库访问权限</p>
+                        <div class="bg-gray-50 p-4 rounded-lg mb-3">
+                            <ol class="list-decimal list-inside space-y-2 text-sm text-gray-700">
+                                <li>打开项目中的 <code class="bg-gray-200 px-2 py-1 rounded">SUPABASE_POLICIES.sql</code></li>
+                                <li>复制全部内容</li>
+                                <li>在 Supabase SQL Editor 中粘贴</li>
+                                <li>点击 "Run" 执行</li>
+                                <li>等待执行完成（可能需要几秒钟）</li>
+                            </ol>
+                        </div>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="step-checkbox w-5 h-5 text-red-600 rounded" data-step="4">
+                            <span class="ml-2 text-gray-700">我已完成此步骤</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-orange-500">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                            <span class="text-orange-600 font-bold">5</span>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">创建存储桶</h3>
+                        <p class="text-gray-600 mb-3">创建用于存储图片的存储桶</p>
+                        <div class="bg-gray-50 p-4 rounded-lg mb-3">
+                            <ol class="list-decimal list-inside space-y-2 text-sm text-gray-700">
+                                <li>在 Supabase 仪表板，点击左侧 "Storage"</li>
+                                <li>点击 "New bucket"</li>
+                                <li>名称输入 <code class="bg-gray-200 px-2 py-1 rounded">club-images</code></li>
+                                <li>勾选 "Public bucket"</li>
+                                <li>点击 "Create bucket"</li>
+                                <li>重复步骤 2-5，创建 <code class="bg-gray-200 px-2 py-1 rounded">activity-images</code> 存储桶
+                                </li>
+                            </ol>
+                        </div>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="step-checkbox w-5 h-5 text-orange-600 rounded" data-step="5">
+                            <span class="ml-2 text-gray-700">我已完成此步骤</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 6 -->
+            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                            <span class="text-green-600 font-bold">6</span>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">验证配置</h3>
+                        <p class="text-gray-600 mb-3">确保所有配置都正确</p>
+                        <div class="bg-gray-50 p-4 rounded-lg mb-3">
+                            <ol class="list-decimal list-inside space-y-2 text-sm text-gray-700">
+                                <li>访问 <a href="config-check.html"
+                                        class="text-green-600 hover:underline font-semibold">配置检查页面</a></li>
+                                <li>等待自动检查完成</li>
+                                <li>确保所有检查项都显示绿色 ✅</li>
+                                <li>如有错误，根据提示修复</li>
+                            </ol>
+                        </div>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="step-checkbox w-5 h-5 text-green-600 rounded" data-step="6">
+                            <span class="ml-2 text-gray-700">我已完成此步骤</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completion Message -->
+        <div id="completionMessage"
+            class="hidden mt-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-lg shadow-xl p-8 text-white text-center">
+            <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-feather="check" class="w-12 h-12 text-white"></i>
+            </div>
+            <h2 class="text-3xl font-bold mb-2">配置完成！</h2>
+            <p class="text-lg mb-6">恭喜！你已经完成了所有配置步骤。</p>
+            <div class="space-x-4">
+                <a href="login.html"
+                    class="inline-flex items-center bg-white text-green-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                    前往登录页面 <i data-feather="arrow-right" class="w-5 h-5 ml-2"></i>
+                </a>
+                <a href="config-check.html"
+                    class="inline-flex items-center bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors border-2 border-white">
+                    <i data-feather="check-circle" class="w-5 h-5 mr-2"></i> 验证配置
+                </a>
+            </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="mt-8 bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">📚 快速链接</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <a href="SUPABASE_SETUP_GUIDE.md"
+                    class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                    <svg class="w-6 h-6 text-indigo-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                        </path>
+                    </svg>
+                    <span class="text-gray-700">完整配置指南</span>
+                </a>
+                <a href="POLICIES_QUICK_GUIDE.md"
+                    class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                    <svg class="w-6 h-6 text-purple-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                        </path>
+                    </svg>
+                    <span class="text-gray-700">策略配置指南</span>
+                </a>
+                <a href="config-check.html"
+                    class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                    <svg class="w-6 h-6 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4">
+                        </path>
+                    </svg>
+                    <span class="text-gray-700">配置检查工具</span>
+                </a>
+                <a href="PROJECT_STATUS.md"
+                    class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                    <svg class="w-6 h-6 text-orange-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="text-gray-700">项目状态说明</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const checkboxes = document.querySelectorAll('.step-checkbox');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const completionMessage = document.getElementById('completionMessage');
+        const totalSteps = checkboxes.length;
+
+        // Load saved progress from localStorage
+        checkboxes.forEach(checkbox => {
+            const step = checkbox.dataset.step;
+            const saved = localStorage.getItem(`step-${step}`);
+            if (saved === 'true') {
+                checkbox.checked = true;
+            }
+        });
+
+        // Update progress
+        function updateProgress() {
+            const completed = Array.from(checkboxes).filter(cb => cb.checked).length;
+            const percentage = (completed / totalSteps) * 100;
+
+            progressBar.style.width = `${percentage}%`;
+            progressText.textContent = `${completed}/${totalSteps} 完成`;
+
+            // Show completion message if all steps are done
+            if (completed === totalSteps) {
+                completionMessage.classList.remove('hidden');
+                completionMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                completionMessage.classList.add('hidden');
+            }
+        }
+
+        // Add event listeners
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                const step = this.dataset.step;
+                localStorage.setItem(`step-${step}`, this.checked);
+                updateProgress();
+            });
+        });
+
+        // Initial update
+        updateProgress();
+        feather.replace();
+    </script>
+</body>
+
+</html>

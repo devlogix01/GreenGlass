@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase 配置检查器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg shadow-xl p-8 max-w-2xl w-full">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">🔍 Supabase 配置检查器</h1>
+        
+        <div id="checkResults" class="space-y-4">
+            <div class="flex items-center justify-center py-8">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+            </div>
+        </div>
+
+        <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+            <h3 class="font-semibold text-blue-900 mb-2">📖 使用说明</h3>
+            <ul class="text-sm text-blue-800 space-y-1">
+                <li>• 此工具会自动检查你的 Supabase 配置</li>
+                <li>• 如果发现问题，请参考 <a href="SUPABASE_SETUP_GUIDE.md" class="underline font-semibold">SUPABASE_SETUP_GUIDE.md</a></li>
+                <li>• 配置完成后，访问 <a href="login.html" class="underline font-semibold">login.html</a> 开始使用</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="supabaseClient.js"></script>
+    <script>
+        async function checkConfiguration() {
+            const resultsContainer = document.getElementById('checkResults');
+            const checks = [];
+
+            // Check 1: Supabase Client Initialization
+            checks.push({
+                name: 'Supabase 客户端初始化',
+                test: () => {
+                    return window.supabaseClient !== undefined && window.supabaseClient !== null;
+                },
+                success: 'Supabase 客户端已成功初始化',
+                failure: 'Supabase 客户端初始化失败，请检查 supabaseClient.js'
+            });
+
+            // Check 2: URL Configuration
+            checks.push({
+                name: 'Supabase URL 配置',
+                test: () => {
+                    return typeof SUPABASE_URL !== 'undefined' && 
+                           SUPABASE_URL !== 'YOUR_SUPABASE_URL' &&
+                           SUPABASE_URL.includes('supabase.co');
+                },
+                success: `URL 已配置: ${SUPABASE_URL}`,
+                failure: 'URL 未配置或配置错误，请在 supabaseClient.js 中设置正确的 SUPABASE_URL'
+            });
+
+            // Check 3: Anon Key Configuration
+            checks.push({
+                name: 'Supabase Anon Key 配置',
+                test: () => {
+                    return typeof SUPABASE_ANON_KEY !== 'undefined' && 
+                           SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY' &&
+                           SUPABASE_ANON_KEY.length > 100;
+                },
+                success: 'Anon Key 已配置',
+                failure: 'Anon Key 未配置或配置错误，请在 supabaseClient.js 中设置正确的 SUPABASE_ANON_KEY'
+            });
+
+            // Check 4: Database Connection
+            let tablesExist = false;
+            checks.push({
+                name: '数据库连接测试',
+                test: async () => {
+                    try {
+                        const { data, error } = await window.supabaseClient
+                            .from('clubs')
+                            .select('count')
+                            .limit(1);
+                        
+                        if (error) {
+                            console.error('Database connection error:', error);
+                            return false;
+                        }
+                        tablesExist = true;
+                        return true;
+                    } catch (error) {
+                        console.error('Database connection error:', error);
+                        return false;
+                    }
+                },
+                success: '成功连接到数据库，clubs 表存在',
+                failure: '无法连接到数据库或 clubs 表不存在，请在 Supabase SQL 编辑器中创建表'
+            });
+
+            // Check 5: Storage Buckets
+            checks.push({
+                name: '存储桶检查',
+                test: async () => {
+                    try {
+                        const { data, error } = await window.supabaseClient.storage.listBuckets();
+                        
+                        if (error) {
+                            console.error('Storage check error:', error);
+                            return false;
+                        }
+                        
+                        const hasClubImages = data.some(bucket => bucket.name === 'club-images');
+                        const hasActivityImages = data.some(bucket => bucket.name === 'activity-images');
+                        
+                        return hasClubImages && hasActivityImages;
+                    } catch (error) {
+                        console.error('Storage check error:', error);
+                        return false;
+                    }
+                },
+                success: '存储桶 club-images 和 activity-images 已创建',
+                failure: '存储桶未创建或配置错误，请在 Supabase Storage 中创建 club-images 和 activity-images 存储桶'
+            });
+
+            // Run all checks
+            resultsContainer.innerHTML = '';
+            let allPassed = true;
+
+            for (let i = 0; i < checks.length; i++) {
+                const check = checks[i];
+                const checkElement = document.createElement('div');
+                checkElement.className = 'p-4 rounded-lg border-2';
+                
+                try {
+                    const result = typeof check.test === 'function' ? await check.test() : check.test;
+                    
+                    if (result) {
+                        checkElement.classList.add('bg-green-50', 'border-green-200');
+                        checkElement.innerHTML = `
+                            <div class="flex items-start">
+                                <svg class="w-6 h-6 text-green-600 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <div>
+                                    <h3 class="font-semibold text-green-900">${check.name}</h3>
+                                    <p class="text-sm text-green-700 mt-1">${check.success}</p>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        allPassed = false;
+                        checkElement.classList.add('bg-red-50', 'border-red-200');
+                        checkElement.innerHTML = `
+                            <div class="flex items-start">
+                                <svg class="w-6 h-6 text-red-600 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                                <div>
+                                    <h3 class="font-semibold text-red-900">${check.name}</h3>
+                                    <p class="text-sm text-red-700 mt-1">${check.failure}</p>
+                                </div>
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    allPassed = false;
+                    checkElement.classList.add('bg-red-50', 'border-red-200');
+                    checkElement.innerHTML = `
+                        <div class="flex items-start">
+                            <svg class="w-6 h-6 text-red-600 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                            <div>
+                                <h3 class="font-semibold text-red-900">${check.name}</h3>
+                                <p class="text-sm text-red-700 mt-1">${check.failure}</p>
+                                <p class="text-xs text-red-600 mt-1">错误: ${error.message}</p>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                resultsContainer.appendChild(checkElement);
+            }
+
+            // Add summary
+            const summaryElement = document.createElement('div');
+            summaryElement.className = `p-6 rounded-lg border-2 mt-6 ${allPassed ? 'bg-green-50 border-green-300' : 'bg-yellow-50 border-yellow-300'}`;
+            
+            if (allPassed) {
+                summaryElement.innerHTML = `
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i data-feather="check" class="w-10 h-10 text-green-600"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-green-900 mb-2">配置完成！</h2>
+                        <p class="text-green-700 mb-4">所有检查都已通过，你的项目已准备就绪。</p>
+                        <a href="login.html" class="inline-flex items-center bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                            前往登录页面 <i data-feather="arrow-right" class="w-5 h-5 ml-2"></i>
+                        </a>
+                    </div>
+                `;
+            } else {
+                summaryElement.innerHTML = `
+                    <div class="text-center">
+                        <svg class="w-16 h-16 text-yellow-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                        <h2 class="text-2xl font-bold text-yellow-900 mb-2">⚠️ 配置未完成</h2>
+                        <p class="text-yellow-700 mb-4">请根据上述错误提示完成配置。</p>
+                        <a href="SUPABASE_SETUP_GUIDE.md" class="inline-block bg-yellow-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-yellow-700 transition-colors">
+                            查看配置指南 →
+                        </a>
+                    </div>
+                `;
+            }
+            
+            resultsContainer.appendChild(summaryElement);
+        }
+
+        // Run checks when page loads
+        window.addEventListener('load', () => {
+            setTimeout(checkConfiguration, 500);
+        });
+    </script>
+</body>
+</html>
